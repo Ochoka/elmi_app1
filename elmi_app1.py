@@ -37,11 +37,9 @@ if st.session_state['authentication_status']:
     }
 
     [data-testid="stMain"] {
-        color: Black;
+        color: #002A6C;
         background-color: #cce7e8;
     }
-
-
 
     </style>
     """
