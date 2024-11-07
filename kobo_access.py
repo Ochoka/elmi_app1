@@ -5,6 +5,7 @@ import re
 import base64
 from io import BytesIO
 import numpy as np
+import xlsxwriter
 
 # Store the extraction information
 KOBO_TOKEN = st.secrets["KOBO_TOKEN"]
