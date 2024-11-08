@@ -1,25 +1,71 @@
-# Import needed libraries
+# # Import needed libraries
 import streamlit as st
 import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 import kobo_access as ka
 
-# Page configuration
+# # Page configuration
 st.set_page_config(page_title="Data Handling", page_icon=":bar_chart:",
                    layout="wide")
 
-with open('config.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
+# CSS to style the header section
+st.markdown("""
+    <style>
+        [data-testid="stHeader"] {
+            background-color: #2d978e;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
 
-# Pre-hashing all plain text passwords once
-# stauth.Hasher.hash_passwords(config['credentials'])
+
+        }
+
+        /* Add custom text inside the header */
+        [data-testid="stHeader"]::before {
+            content: "ELMI Data Handler Tool";
+            font-weight: bold;
+            font-size: 30px;
+            color: #002A6C;
+            display: block;
+            text-align: center;
+            padding: 8px 0;
+        }
+                /* Custom sidebar container to start below the header */
+        .eczjsme18{
+            margin-top: 60px; /* Adjust this based on the height of the header */
+            width: auto; /* Set the desired width */
+            height: calc(100vh - 100px); /* Full height minus the header height */
+            background-color: #f4f4f4; /* Optional: Set sidebar background color */
+            border-right: 1px solid #ddd; /* Optional: Add border */
+            padding-top: 0px; /* Optional: Padding at the top */
+        }
+        .st-key-Logout .ef3psqc19{
+            color: White;
+            font-weight: bold;
+            background-color: #A20000;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+    </style>
+""", unsafe_allow_html=True)
+
 
 authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days']
+    st.secrets["credentials"].to_dict(),
+    st.secrets['cookie']['name'],
+    st.secrets['cookie']['key'],
+    st.secrets['cookie']['expiry_days']
 )
 
 try:
@@ -28,26 +74,14 @@ except Exception as e:
     st.sidebar.error(e)
 
 if st.session_state['authentication_status']:
-    # Use Streamlit's markdown feature to insert HTML with inline CSS
-    st.html(
-        """
-    <style>
-    [data-testid="stSidebarContent"] {
-        color: Black;
-        background-color: #03fcf8;
-    }
-
-    [data-testid="stMain"] {
-        color: #002A6C;
-        background-color: #cce7e8;
-    }
-
-    </style>
-    """
-    )
     st.sidebar.write(f'Welcome **{st.session_state["name"]}**')
     # set title
-    st.title("Download, Format and Edit Data")
+    # st.title("Download, Format and Edit Data")
+
+    # Add a space between the two rows
+    # st.write("---")
+
+
     # Set a sidebar for selecting data to access
     data_type = st.sidebar.selectbox("Select the Data Type",
                                      ("KII/Survey", "FGD"),
@@ -236,3 +270,4 @@ elif st.session_state['authentication_status'] is False:
     st.error('Username/password is incorrect')
 elif st.session_state['authentication_status'] is None:
     st.warning('Please enter your username and password')
+
